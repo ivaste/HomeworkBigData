@@ -72,7 +72,7 @@ public class G04HW1 {
                     }
                     return pairs.iterator();
                 })
-                .groupByKey()
+                .groupByKey() // <-- REDUCE PHASE (R2)
                 .mapValues((it) -> {
                     long sum = 0;
                     for (long c : it) {
