@@ -88,10 +88,10 @@ public class G04HW1 {
         // Print results
         // TODO ......................................................
         System.out.println("VERSION WITH DETERMINISTIC PARTITIONS");
-        System.out.print("Output pairs = ");
+        System.out.print("Output pairs =");
         //List<> pairs = output.collect();
         for (Tuple2<String,Long> pair: output.collect()) {
-            System.out.print("("+pair._1+", "+pair._2+")"+" ");
+            System.out.print(" ("+pair._1+", "+pair._2+")");
         }
         System.out.println();
 
