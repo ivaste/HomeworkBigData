@@ -1,10 +1,13 @@
 import mx4j.log.Log;
+import org.apache.hadoop.mapred.lib.LazyOutputFormat;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.storage.StorageLevel;
 import scala.Tuple2;
+import scala.collection.convert.Wrappers;
+import scala.collection.immutable.ListSet;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -82,7 +85,10 @@ public class G04HW1 {
                 });
         System.out.println("VERSION WITH DETERMINISTIC PARTITIONS");
         System.out.print("Output pairs = ");
-        count.sortByKey((Comparator<String>& Serializable) (x, y) -> x.compareTo(y)).foreach(data -> {
+
+        ArrayList<Tuple2<String, Long>> sorted = new ArrayList<>(count.collect());
+        sorted.sort((x, y) -> x._1.compareTo(y._1));
+        sorted.forEach(data -> {
             System.out.print("(" + data._1 + ", " + data._2 + ") ");
         });
         System.out.println();
