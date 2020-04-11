@@ -1,5 +1,6 @@
 import mx4j.log.Log;
 import org.apache.hadoop.mapred.lib.LazyOutputFormat;
+import org.apache.hadoop.util.hash.Hash;
 import org.apache.spark.Partitioner;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaPairRDD;
@@ -17,6 +18,8 @@ import java.io.Serializable;
 import java.util.*;
 
 public class G04HW1 {
+
+    public static String MAX_PARTITION = "maxPartitionSize";
 
     public static void main(String[] args) throws IOException {
 
@@ -83,13 +86,12 @@ public class G04HW1 {
                         sum += c;
                     }
                     return sum;
-                });
+                })
+                .sortByKey();
         System.out.println("VERSION WITH DETERMINISTIC PARTITIONS");
         System.out.print("Output pairs = ");
 
-        ArrayList<Tuple2<String, Long>> sorted = new ArrayList<>(output1.collect());
-        sorted.sort((x, y) -> x._1.compareTo(y._1));
-        sorted.forEach(data -> {
+        output1.foreach(data -> {
             System.out.print("(" + data._1 + ", " + data._2 + ") ");
         });
         System.out.println();
@@ -103,17 +105,64 @@ public class G04HW1 {
                     long index = Long.parseLong(tokens[0]);
                     String cls = tokens[1];
                     pairs.add(new Tuple2<>(index % K, cls));
-                    System.out.println("MAP PHASE 1");
                     return pairs.iterator();
                 })
                 .mapPartitionsToPair((it) -> {
-                    System.out.println(it);
-                    while (it.hasNext()) {
-                        Tuple2<Long, String> pair = it.next();
-                    }
+                    long num = 0;
+                    HashMap<String, Long> count = new HashMap<>();
                     ArrayList<Tuple2<String, Long>> pairs = new ArrayList<>();
+                    while (it.hasNext()) {
+                        num++;
+                        Tuple2<Long, String> pair = it.next();
+                        count.put(pair._2, 1L + count.getOrDefault(pair._2, 0L));
+                    }
+                    for (Map.Entry<String, Long> entry : count.entrySet()) {
+                        pairs.add(new Tuple2<>(entry.getKey(), entry.getValue()));
+                    }
+                    pairs.add(new Tuple2<>(MAX_PARTITION, num));
+                    return pairs.iterator();
+                })
+                .groupByKey()
+                .flatMapToPair((it) -> {
+                    long N_max = 0;
+                    ArrayList<Tuple2<String, Long>> pairs = new ArrayList<>();
+                    if (it._1.equals(MAX_PARTITION)) {
+                        for (Long n: it._2) {
+                            if (n > N_max) {
+                                N_max = n;
+                            }
+                        }
+                        pairs.add(new Tuple2<>(MAX_PARTITION, N_max));
+                    } else {
+                        String cls = it._1;
+                        long sum = 0;
+                        for (Long n: it._2) {
+                            sum += n;
+                        }
+                        pairs.add(new Tuple2<>(cls, sum));
+                    }
                     return pairs.iterator();
                 });
+
+        System.out.println("VERSION WITH SPARK PARTITIONS");
+        String mfcN="";  //Most frequent class (Name)
+        long mfcF=-1;   //Most frequent class (Frequency)
+        long n_max=0;
+        for (Tuple2<String,Long> pair: output2.collect()) {
+            if(pair._1.equals(MAX_PARTITION)){
+                n_max=pair._2;
+            }
+            else{
+                if(pair._2>mfcF){
+                    mfcN=pair._1;
+                    mfcF=pair._2;
+                }
+            }
+
+        }
+        System.out.print("Most frequent class = ");
+        System.out.print("("+mfcN+", "+mfcF+")");
+        System.out.print("\nMax partition size = "+n_max);
     }
 
 }
