@@ -37,23 +37,25 @@ public class G04HW1 {
 
         // Read number of partitions
         int K = Integer.parseInt(args[0]);
-        System.out.print("K= "+K);
+        //System.out.print("K= "+K);
+
         // Read input file
-        JavaRDD<String> lines = sc.textFile(args[1]);
+        JavaRDD<String> docs = sc.textFile(args[1]).repartition(K);
 
         // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
         // SETTING GLOBAL VARIABLES
         // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
-        JavaPairRDD<String, Long> output;
+        JavaPairRDD<String, Long> output1;
+        JavaPairRDD<String, Long> output2;
 
         // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
         // CLASS COUNT with DETERMINISTIC PARTITIONS
         // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
-        output=lines
-                .flatMapToPair((line) -> {    // <-- MAP PHASE (R1)
-                    String[] tokens = line.split(" ");
+        output1=docs
+                .flatMapToPair((document) -> {    // <-- MAP PHASE (R1)
+                    String[] tokens = document.split(" ");
                     ArrayList<Tuple2<Long, String>> pairs = new ArrayList<>();
                     long index = Long.parseLong(tokens[0]);
                     String cls = tokens[1];
@@ -90,7 +92,7 @@ public class G04HW1 {
         System.out.println("VERSION WITH DETERMINISTIC PARTITIONS");
         System.out.print("Output pairs =");
         //List<> pairs = output.collect();
-        for (Tuple2<String,Long> pair: output.collect()) {
+        for (Tuple2<String,Long> pair: output1.sortByKey().collect()) {
             System.out.print(" ("+pair._1+", "+pair._2+")");
         }
         System.out.println();
