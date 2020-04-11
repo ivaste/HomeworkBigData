@@ -46,8 +46,8 @@ public class G04HW1 {
         // SETTING GLOBAL VARIABLES
         // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
-        JavaPairRDD<String, Long> output1;
-        JavaPairRDD<String, Long> output2;
+        JavaPairRDD<String, Long> output1; //Output for DETERMINISTIC PARTITIONS
+        JavaPairRDD<String, Long> output2; //Output for SPARK PARTITIONS
 
         // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
         // CLASS COUNT with DETERMINISTIC PARTITIONS
@@ -85,14 +85,13 @@ public class G04HW1 {
                     pairs.add(new Tuple2<>(cls,sum));
                     
                     return pairs.iterator();
-                });
+                })
+                .sortByKey();
 
         // Print results
-        // TODO ......................................................
         System.out.println("VERSION WITH DETERMINISTIC PARTITIONS");
         System.out.print("Output pairs =");
-        //List<> pairs = output.collect();
-        for (Tuple2<String,Long> pair: output1.sortByKey().collect()) {
+        for (Tuple2<String,Long> pair: output1.collect()) {
             System.out.print(" ("+pair._1+", "+pair._2+")");
         }
         System.out.println();
@@ -102,7 +101,74 @@ public class G04HW1 {
         // CLASS COUNT with SPARK PARTITIONS
         // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
-        // TODO.....
+        output2=docs
+                .flatMapToPair((document) -> {    // <-- MAP PHASE (R1)
+                    String[] tokens = document.split(" ");
+                    ArrayList<Tuple2<Long, String>> pairs = new ArrayList<>();
+                    long index = Long.parseLong(tokens[0]);
+                    String cls = tokens[1];
+                    pairs.add(new Tuple2<>(index % K, cls));
+                    return pairs.iterator();
+                })
+                .mapPartitionsToPair((pair)->{  // <-- REDUCE PHASE (R1)
+                    long n=0;    // used to count the number of pairs processed
+                    HashMap<String, Long> counts = new HashMap<>();
+                    ArrayList<Tuple2<String, Long>> pairs = new ArrayList<>();
+                    while(pair.hasNext()){
+                        n++;
+                        Tuple2<Long, String> tuple = pair.next();
+                        String cls=tuple._2; //class
+                        counts.put(cls, 1L + counts.getOrDefault(cls, 0L));
+                    }
+
+                    for (Map.Entry<String, Long> e: counts.entrySet()) {
+                        pairs.add(new Tuple2<>(e.getKey(), e.getValue()));
+                    }
+                    pairs.add(new Tuple2<>("maxPartitionSize", n)); // return also the pair indicating the size of THIS partition
+                    return pairs.iterator();
+                })
+                .groupByKey() // <-- REDUCE PHASE (R2)
+                .flatMapToPair((pair) -> {
+                    ArrayList<Tuple2<String, Long>> pairs = new ArrayList<>();
+                    if(pair._1.equals("maxPartitionSize")){
+                        long max= Long.MIN_VALUE;
+                        for (long c : pair._2) {
+                            if(c>=max) max=c;
+                        }
+                    }
+
+                    String cls=pair._1;
+                    long sum = 0;
+                    for (long c : pair._2) {
+                        sum += c;
+                    }
+                    pairs.add(new Tuple2<>(cls,sum));
+
+                    return pairs.iterator();
+                })
+                .sortByKey();;
+
+        // Print results
+        System.out.println("VERSION WITH SPARK PARTITIONS");
+        String mfcN="";  //Most frequent class (Name)
+        long mfcF=-1;   //Most frequent class (Frequency)
+        long n_max=0;
+        for (Tuple2<String,Long> pair: output2.collect()) {
+            if(pair._1.equals("maxPartitionSize")){
+                n_max=pair._2;
+            }
+            else{
+                if(pair._2>mfcF){
+                    mfcN=pair._1;
+                    mfcF=pair._2;
+                }
+            }
+
+        }
+        System.out.print("Most frequent class = ");
+        System.out.print("("+mfcN+", "+mfcF+")");
+        System.out.print("\nMax partition size = "+n_max);
+
 
     }
 
