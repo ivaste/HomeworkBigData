@@ -1,5 +1,6 @@
 import mx4j.log.Log;
 import org.apache.hadoop.mapred.lib.LazyOutputFormat;
+import org.apache.spark.Partitioner;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
@@ -52,9 +53,9 @@ public class G04HW1 {
 
         long numdocs = docs.count();
         System.out.println("Number of documents = " + numdocs);
-        JavaPairRDD<String, Long> count;
+        JavaPairRDD<String, Long> output1;
 
-        count = docs
+        output1 = docs
                 .flatMapToPair((document) -> {    // <-- MAP PHASE (R1)
                     String[] tokens = document.split(" ");
                     ArrayList<Tuple2<Long, String>> pairs = new ArrayList<>();
@@ -86,12 +87,33 @@ public class G04HW1 {
         System.out.println("VERSION WITH DETERMINISTIC PARTITIONS");
         System.out.print("Output pairs = ");
 
-        ArrayList<Tuple2<String, Long>> sorted = new ArrayList<>(count.collect());
+        ArrayList<Tuple2<String, Long>> sorted = new ArrayList<>(output1.collect());
         sorted.sort((x, y) -> x._1.compareTo(y._1));
         sorted.forEach(data -> {
             System.out.print("(" + data._1 + ", " + data._2 + ") ");
         });
         System.out.println();
+
+        JavaPairRDD<String, Long> output2;
+
+        output2 = docs
+                .flatMapToPair((document) -> {    // <-- MAP PHASE (R1)
+                    String[] tokens = document.split(" ");
+                    ArrayList<Tuple2<Long, String>> pairs = new ArrayList<>();
+                    long index = Long.parseLong(tokens[0]);
+                    String cls = tokens[1];
+                    pairs.add(new Tuple2<>(index % K, cls));
+                    System.out.println("MAP PHASE 1");
+                    return pairs.iterator();
+                })
+                .mapPartitionsToPair((it) -> {
+                    System.out.println(it);
+                    while (it.hasNext()) {
+                        Tuple2<Long, String> pair = it.next();
+                    }
+                    ArrayList<Tuple2<String, Long>> pairs = new ArrayList<>();
+                    return pairs.iterator();
+                });
     }
 
 }
