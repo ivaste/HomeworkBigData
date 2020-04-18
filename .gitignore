@@ -4,4 +4,4 @@ build/
 gradle/
 gradlew
 gradlew.bat
-.idea/workspace.xml
+.idea/
