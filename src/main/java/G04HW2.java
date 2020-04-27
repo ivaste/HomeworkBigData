@@ -7,8 +7,11 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class G04HW2 {
+
+    public static long SEED = 1231829; //Put here your random seed
 
     public static void main(String[] args) throws FileNotFoundException {
 
@@ -83,10 +86,32 @@ public class G04HW2 {
     }
 
     public static void twoApproxMPD(ArrayList<Vector> inputPoints, int K) {
+        if (K < 0 || K >= inputPoints.size()) {
+            throw new IllegalArgumentException("K should be > 0 and < inputPoints.size()");
+        }
         double maxDistance = 0;
         long startMs = System.currentTimeMillis();
         //Write code here
 
+        ArrayList<Vector> randomPoints = new ArrayList<>();
+
+        //Choosing K random elements from inputPoints and putting them in randomPoints
+        Random random = new Random(SEED);
+        //O(K)
+        for (int i = 0; i < K; ++i) {
+            int index = random.nextInt(inputPoints.size()); //O(1)
+            randomPoints.add(inputPoints.get(index)); //O(1)
+            inputPoints.remove(index); //Removing elements from inputPoints to avoid checking twice the elements which are in randomPoints
+        }
+
+        for (Vector p1 : randomPoints) { //O(K)
+            for (Vector p2 : inputPoints) { // O(N - K)
+                double distance = Vectors.sqdist(p1, p2);
+                if (distance > maxDistance) {
+                    maxDistance = distance;
+                }
+            }
+        }
 
         long endMs = System.currentTimeMillis();
         long deltaMs = endMs - startMs;
@@ -98,11 +123,12 @@ public class G04HW2 {
     }
 
     public static void kCenterMPD(ArrayList<Vector> inputPoints, int K) {
+        if (K < 0 || K >= inputPoints.size()) {
+            throw new IllegalArgumentException("K should be > 0 and < inputPoints.size()");
+        }
         double maxDistance = 0;
         long startMs = System.currentTimeMillis();
         //Write code here
-
-
 
         long endMs = System.currentTimeMillis();
         long deltaMs = endMs - startMs;
