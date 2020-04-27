@@ -2,11 +2,14 @@ import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.mllib.linalg.Vector;
 import org.apache.spark.mllib.linalg.Vectors;
+import scala.Tuple2;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 public class G04HW2 {
@@ -48,13 +51,36 @@ public class G04HW2 {
             return;
         }
 
-        exactMPD(inputPoints);
+        long startMs = System.currentTimeMillis();
+        double exactDistance = exactMPD(inputPoints);
+        long endMs = System.currentTimeMillis();
+        long deltaMs = endMs - startMs;
+        System.out.println("EXACT ALGORITHM");
+        System.out.println("Max distance = " +exactDistance);
+        System.out.println("Running time = " +deltaMs);
+        System.out.println();
 
 
-        twoApproxMPD(inputPoints, K);
+        startMs = System.currentTimeMillis();
+        double twoApproxDistance = twoApproxMPD(inputPoints, K);
+        endMs = System.currentTimeMillis();
+        deltaMs = endMs - startMs;
+        System.out.println("2-APPROXIMATION ALGORITHM");
+        System.out.println("k = " +K);
+        System.out.println("Max distance = " +twoApproxDistance);
+        System.out.println("Running time = " +deltaMs);
+        System.out.println();
 
-
-        kCenterMPD(inputPoints, K);
+        startMs = System.currentTimeMillis();
+        ArrayList<Vector> centers = kCenterMPD(inputPoints, K);
+        double kCenterDistance = exactMPD(centers);
+        endMs = System.currentTimeMillis();
+        deltaMs = endMs - startMs;
+        System.out.println("k-CENTER-BASED ALGORITHM");
+        System.out.println("k = " +K);
+        System.out.println("Max distance = " +kCenterDistance);
+        System.out.println("Running time = " +deltaMs);
+        System.out.println();
 
 
     }
@@ -64,10 +90,8 @@ public class G04HW2 {
      *              HOMEWORK METHODS
      * ===============================================
      */
-    public static void exactMPD(ArrayList<Vector> inputPoints) {
+    public static double exactMPD(ArrayList<Vector> inputPoints) {
         double maxDistance = 0;
-        long startMs = System.currentTimeMillis();
-        //Write code here
         for(Vector p1 : inputPoints) {
             for (Vector p2 : inputPoints) {
                 double distance = Vectors.sqdist(p1, p2);
@@ -76,23 +100,14 @@ public class G04HW2 {
                 }
             }
         }
-
-        long endMs = System.currentTimeMillis();
-        long deltaMs = endMs - startMs;
-        System.out.println("EXACT ALGORITHM");
-        System.out.println("Max distance = " +maxDistance);
-        System.out.println("Running time = " +deltaMs);
-        System.out.println();
+        return maxDistance;
     }
 
-    public static void twoApproxMPD(ArrayList<Vector> inputPoints, int K) {
+    public static double twoApproxMPD(ArrayList<Vector> inputPoints, int K) {
         if (K < 0 || K >= inputPoints.size()) {
             throw new IllegalArgumentException("K should be > 0 and < inputPoints.size()");
         }
         double maxDistance = 0;
-        long startMs = System.currentTimeMillis();
-        //Write code here
-
         ArrayList<Vector> randomPoints = new ArrayList<>();
 
         //Choosing K random elements from inputPoints and putting them in randomPoints
@@ -112,31 +127,61 @@ public class G04HW2 {
                 }
             }
         }
-
-        long endMs = System.currentTimeMillis();
-        long deltaMs = endMs - startMs;
-        System.out.println("2-APPROXIMATION ALGORITHM");
-        System.out.println("k = " +K);
-        System.out.println("Max distance = " +maxDistance);
-        System.out.println("Running time = " +deltaMs);
-        System.out.println();
+        return maxDistance;
     }
 
-    public static void kCenterMPD(ArrayList<Vector> inputPoints, int K) {
+    public static ArrayList<Vector> kCenterMPD(ArrayList<Vector> inputPoints, int K) {
         if (K < 0 || K >= inputPoints.size()) {
             throw new IllegalArgumentException("K should be > 0 and < inputPoints.size()");
         }
-        double maxDistance = 0;
-        long startMs = System.currentTimeMillis();
-        //Write code here
 
-        long endMs = System.currentTimeMillis();
-        long deltaMs = endMs - startMs;
-        System.out.println("k-CENTER-BASED ALGORITHM");
-        System.out.println("k = " +K);
-        System.out.println("Max distance = " +maxDistance);
-        System.out.println("Running time = " +deltaMs);
-        System.out.println();
+        ArrayList<Vector> centers = new ArrayList<>(); //Our set S
+        Map<Vector, Tuple2<Vector, Double>> mappedPoints = new HashMap<>(); //Stores the point as a key and a tuple as a value which stores the point's center and its distance from the center
+        //First random point ck
+        Random random = new Random(SEED);
+        int index = random.nextInt(inputPoints.size());
+        centers.add(inputPoints.get(index));
+
+        inputPoints.remove(index); //P - S
+        for (Vector p : inputPoints) {//O(N)
+            mappedPoints.put(p, new Tuple2<>(centers.get(0), Vectors.sqdist(p, centers.get(0))));
+        }
+
+        //The cycle should run in O(K*(N+N)) = O(K*N) where N = inputPoints.size()
+        for (int i = 0; i < K - 1; ++i) { //K-1 since the first element is already added. O(K)
+            Vector newCenter = null;
+            double distance = 0;
+            int indexOfNewCenter = -1; //Stores the index od the new center in order to remove it in O(1) from inputPoints
+
+            for (int j = 0; j < inputPoints.size(); ++j) {  //O(N)
+                Vector p = inputPoints.get(j); //O(1)
+                Tuple2<Vector, Double> tuple = mappedPoints.get(p); //O(1) hashmap!
+                //Checks which point is the farthest from its center
+                if (tuple._2 > distance) { //O(1)
+                    distance = tuple._2;
+                    newCenter = p;
+                    indexOfNewCenter = j;
+                }
+            }
+
+            if (newCenter != null) {
+                centers.add(newCenter); //O(1)
+                inputPoints.remove(indexOfNewCenter); //P - S O(1)
+
+                //Updates the center of the points where the distance of the new added center is less equal than the older center
+                for (Vector p : inputPoints) { //O(N)
+                    Tuple2<Vector, Double> tuple = mappedPoints.get(p); //O(1) hashmap!
+                    double dist = Vectors.sqdist(p, newCenter); //O(1)
+                    if (dist < tuple._2) { //O(1)
+                        mappedPoints.remove(p);
+                        mappedPoints.put(p, new Tuple2<>(newCenter, dist)); //O(1) hashmap!
+                    }
+                }
+            }
+        }
+        assert centers.size() == K; //Makes sure that there are K points
+
+        return centers;
     }
 
     /*
