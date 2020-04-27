@@ -36,7 +36,7 @@ public class G04HW2 {
         // Read number of partitions
         int K = Integer.parseInt(args[0]);
 
-        // Read input file and subdivide it into K random partitions
+        // Read input file
         ArrayList<Vector> inputPoints;
         try {
             inputPoints = readVectorsSeq(args[1]);
@@ -65,14 +65,21 @@ public class G04HW2 {
         double maxDistance = 0;
         long startMs = System.currentTimeMillis();
         //Write code here
-
-
+        for(Vector p1 : inputPoints) {
+            for (Vector p2 : inputPoints) {
+                double distance = Vectors.sqdist(p1, p2);
+                if (distance > maxDistance) {
+                    maxDistance = distance;
+                }
+            }
+        }
 
         long endMs = System.currentTimeMillis();
         long deltaMs = endMs - startMs;
         System.out.println("EXACT ALGORITHM");
         System.out.println("Max distance = " +maxDistance);
         System.out.println("Running time = " +deltaMs);
+        System.out.println();
     }
 
     public static void twoApproxMPD(ArrayList<Vector> inputPoints, int K) {
@@ -81,13 +88,13 @@ public class G04HW2 {
         //Write code here
 
 
-
         long endMs = System.currentTimeMillis();
         long deltaMs = endMs - startMs;
         System.out.println("2-APPROXIMATION ALGORITHM");
         System.out.println("k = " +K);
         System.out.println("Max distance = " +maxDistance);
         System.out.println("Running time = " +deltaMs);
+        System.out.println();
     }
 
     public static void kCenterMPD(ArrayList<Vector> inputPoints, int K) {
@@ -103,6 +110,7 @@ public class G04HW2 {
         System.out.println("k = " +K);
         System.out.println("Max distance = " +maxDistance);
         System.out.println("Running time = " +deltaMs);
+        System.out.println();
     }
 
     /*
