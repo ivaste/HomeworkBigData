@@ -1,11 +1,20 @@
 # Homework Big Data Computing
 MSc Big Data Computing Homeworks at UniPD
 
-## Homework 1 - ???
+## Homework 1 - Class count problem
+**Link:** [G04HW1.java](https://github.com/ivaste/HomeworkBigData/blob/master/src/main/java/G04HW1.java)  
+**Contents:**
+ - With Deterministic partitions
+ - With Spark partitions
+
+ 
+ ## Homework 2 - Max pairwise distance problem
 **Link:** [????](https://google.com)  
 **Contents:**
  - ???
  - ???
+ 
+
  
  # Team
  | <a href="https://stefanoivancich.com" target="_blank">**Stefano Ivancich**</a> | <a href="https://github.com/deno750" target="_blank">**Denis Deronjic**</a> | <a href="https://github.com/Lollyz" target="_blank">**Lorenzo Farinea**</a> |
