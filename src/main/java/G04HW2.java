@@ -57,7 +57,7 @@ public class G04HW2 {
         long deltaMs = endMs - startMs;
         System.out.println("EXACT ALGORITHM");
         System.out.println("Max distance = " +exactDistance);
-        System.out.println("Running time = " +deltaMs);
+        System.out.println("Running time = " +deltaMs+ " ms");
         System.out.println();
 
 
@@ -68,7 +68,7 @@ public class G04HW2 {
         System.out.println("2-APPROXIMATION ALGORITHM");
         System.out.println("k = " +K);
         System.out.println("Max distance = " +twoApproxDistance);
-        System.out.println("Running time = " +deltaMs);
+        System.out.println("Running time = " +deltaMs+ " ms");
         System.out.println();
 
         startMs = System.currentTimeMillis();
@@ -79,7 +79,7 @@ public class G04HW2 {
         System.out.println("k-CENTER-BASED ALGORITHM");
         System.out.println("k = " +K);
         System.out.println("Max distance = " +kCenterDistance);
-        System.out.println("Running time = " +deltaMs);
+        System.out.println("Running time = " +deltaMs+ " ms");
         System.out.println();
 
 
