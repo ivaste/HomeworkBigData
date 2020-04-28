@@ -1,5 +1,3 @@
-import org.apache.spark.SparkConf;
-import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.mllib.linalg.Vector;
 import org.apache.spark.mllib.linalg.Vectors;
 import scala.Tuple2;
@@ -16,7 +14,7 @@ public class G04HW2 {
 
     public static long SEED = 1231829; //Put here your random seed
 
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) {
 
         // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
         // CHECKING NUMBER OF CMD LINE PARAMETERS
@@ -26,14 +24,6 @@ public class G04HW2 {
         if (args.length != 2) {
             throw new IllegalArgumentException("USAGE: num_partitions file_path");
         }
-
-        // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-        // SPARK SETUP
-        // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-
-        SparkConf conf = new SparkConf(true).setAppName("Homework2");
-        JavaSparkContext sc = new JavaSparkContext(conf);
-        sc.setLogLevel("WARN");
 
         // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
         // INPUT READING
