@@ -7,14 +7,18 @@ MSc Big Data Computing Homeworks at UniPD
  - Solution with Deterministic partitions
  - Solution with Spark partitions
 
- 
  ## Homework 2 - Max pairwise distance problem
+**Link:** [????](https://google.com)  
+**Contents:**
+ - Exact solution
+ - 2-approximation by taking k random points and returning the maximum distance between these points and all other points of S
+ - Exact solution of a subset of C of S, where C are k centers retruned by Farthest-First Traversal
+ 
+ ## Homework 3 - ???
 **Link:** [????](https://google.com)  
 **Contents:**
  - ???
  - ???
- 
-
  
  # Team
  | <a href="https://stefanoivancich.com" target="_blank">**Stefano Ivancich**</a> | <a href="https://github.com/deno750" target="_blank">**Denis Deronjic**</a> | <a href="https://github.com/Lollyz" target="_blank">**Lorenzo Farinea**</a> |
