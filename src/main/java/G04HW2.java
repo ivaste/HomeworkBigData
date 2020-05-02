@@ -30,12 +30,12 @@ public class G04HW2 {
         // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
         // Read number of partitions
-        int K = Integer.parseInt(args[0]);
+        int K = Integer.parseInt(args[1]);
 
         // Read input file
         ArrayList<Vector> inputPoints;
         try {
-            inputPoints = readVectorsSeq(args[1]);
+            inputPoints = readVectorsSeq(args[0]);
         } catch (IOException e) {
             e.printStackTrace();
             return;
@@ -90,7 +90,7 @@ public class G04HW2 {
                 }
             }
         }
-        return maxDistance;
+        return Math.sqrt(maxDistance);
     }
 
     public static double twoApproxMPD(ArrayList<Vector> inputPoints, int K) {
@@ -117,7 +117,7 @@ public class G04HW2 {
                 }
             }
         }
-        return maxDistance;
+        return Math.sqrt(maxDistance);
     }
 
     public static ArrayList<Vector> kCenterMPD(ArrayList<Vector> inputPoints, int K) {
@@ -134,7 +134,8 @@ public class G04HW2 {
 
         inputPoints.remove(index); //P - S
         for (Vector p : inputPoints) {//O(N)
-            mappedPoints.put(p, new Tuple2<>(centers.get(0), Vectors.sqdist(p, centers.get(0))));
+            double dist = Vectors.sqdist(p, centers.get(0));
+            mappedPoints.put(p, new Tuple2<>(centers.get(0), dist));
         }
 
         //The cycle should run in O(K*(N+N)) = O(K*N) where N = inputPoints.size()
@@ -162,6 +163,7 @@ public class G04HW2 {
                 for (Vector p : inputPoints) { //O(N)
                     Tuple2<Vector, Double> tuple = mappedPoints.get(p); //O(1) hashmap!
                     double dist = Vectors.sqdist(p, newCenter); //O(1)
+                    dist = Math.sqrt(dist);
                     if (dist < tuple._2) { //O(1)
                         mappedPoints.remove(p);
                         mappedPoints.put(p, new Tuple2<>(newCenter, dist)); //O(1) hashmap!
