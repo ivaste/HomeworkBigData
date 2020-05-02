@@ -12,7 +12,7 @@ import java.util.Random;
 
 public class G04HW2 {
 
-    public static long SEED = 1231829; //Put here your random seed
+    public static long SEED = 1231829; //Random seed unipd student's id
 
     public static void main(String[] args) {
 
