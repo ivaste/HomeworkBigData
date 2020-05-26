@@ -8,7 +8,7 @@ MSc Big Data Computing Homeworks at UniPD
  - Solution with Spark partitions
 
  ## Homework 2 - Max pairwise distance problem
-**Link:** [????](https://google.com)  
+**Link:** [G04HW2.java](https://github.com/ivaste/HomeworkBigData/blob/master/src/main/java/G04HW2.java)  
 **Contents:**
  - Exact solution
  - 2-approximation by taking k random points and returning the maximum distance between these points and all other points of S
