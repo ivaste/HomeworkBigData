@@ -2,6 +2,8 @@ DEI
 ssh ivancichst@login.dei.unipd.it
 ssh -p 2222 group04@147.162.226.106
 
+hdfs dfs -ls /data/BDC1920
+
 ///////////////////////////////////////////////////
 UPLOAD FILE JAR FROM INTELLIJ:
 
@@ -21,4 +23,12 @@ where:
 	argument-list = /data/BDC1920/filename
 
 
+UBER-SMALL
 spark-submit --num-executors 4  --class G04HW3 HomeworkBigData-all.jar 10 10 /data/BDC1920/uber-small.csv
+
+Glove2M300d.txt	100	16	16
+spark-submit --num-executors 16  --class G04HW3 HomeworkBigData-all.jar 100 16 /data/BDC1920/Glove2M300d.txt
+Init= 681 ms
+T1= 53149 ms
+T2 = 67574 ms
+Aver= 29.04073384782192
