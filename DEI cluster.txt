@@ -1,0 +1,24 @@
+DEI
+ssh ivancichst@login.dei.unipd.it
+ssh -p 2222 group04@147.162.226.106
+
+///////////////////////////////////////////////////
+UPLOAD FILE JAR FROM INTELLIJ:
+
+scp build\libs\HomeworkBigData-all.jar ivancichst@login.dei.unipd.it:.
+
+ssh ivancichst@login.dei.unipd.it
+
+scp -P 2222 HomeworkBigData-all.jar group04@147.162.226.106:.
+
+///////////////////////////////////////////////////
+RUN A JOB
+
+spark-submit --num-executors X  --class G04HW3 HomeworkBigData-all.jar argument-list
+
+where: 
+	X
+	argument-list = /data/BDC1920/filename
+
+
+spark-submit --num-executors 4  --class G04HW3 HomeworkBigData-all.jar 10 10 /data/BDC1920/uber-small.csv

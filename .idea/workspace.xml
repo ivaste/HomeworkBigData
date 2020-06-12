@@ -12,6 +12,37 @@
       <ProjectState />
     </projectState>
   </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <task path="$PROJECT_DIR$">
+          <activation />
+        </task>
+        <projects_view>
+          <tree_state>
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="HomeworkBigData" type="f1a62948:ProjectNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="HomeworkBigData" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="HomeworkBigData" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="shadow" type="c8890929:TasksNode$1" />
+              </path>
+            </expand>
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
@@ -36,7 +67,7 @@
     <property name="settings.editor.selected.configurable" value="Errors" />
     <property name="show.unlinked.gradle.project.popup" value="true" />
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Gradle.HomeworkBigData [shadowJar]">
     <configuration name="G04HW3" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="G04HW3" />
       <module name="HomeworkBigData.main" />
@@ -46,8 +77,28 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="HomeworkBigData [shadowJar]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="shadowJar" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.HomeworkBigData [shadowJar]" />
         <item itemvalue="Application.G04HW3" />
       </list>
     </recent_temporary>
@@ -78,22 +129,22 @@
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="371" y="128" key="#com.intellij.ide.util.TreeClassChooserDialog/0.0.1280.680@0.0.1280.680" timestamp="1585930845940" />
-    <state width="1237" height="107" key="GridCell.Tab.0.bottom" timestamp="1591956698661">
+    <state width="1237" height="107" key="GridCell.Tab.0.bottom" timestamp="1591980124764">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="107" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1591956698661" />
-    <state width="1237" height="107" key="GridCell.Tab.0.center" timestamp="1591956698661">
+    <state width="1237" height="107" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1591980124764" />
+    <state width="1237" height="107" key="GridCell.Tab.0.center" timestamp="1591980124764">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="107" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1591956698661" />
-    <state width="1237" height="107" key="GridCell.Tab.0.left" timestamp="1591956698661">
+    <state width="1237" height="107" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1591980124764" />
+    <state width="1237" height="107" key="GridCell.Tab.0.left" timestamp="1591980124764">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="107" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1591956698661" />
-    <state width="1237" height="107" key="GridCell.Tab.0.right" timestamp="1591956698661">
+    <state width="1237" height="107" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1591980124764" />
+    <state width="1237" height="107" key="GridCell.Tab.0.right" timestamp="1591980124764">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="107" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1591956698661" />
+    <state width="1237" height="107" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1591980124764" />
     <state x="121" y="0" key="SettingsEditor" timestamp="1585924534131">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
