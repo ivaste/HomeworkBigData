@@ -37,10 +37,10 @@
     <property name="show.unlinked.gradle.project.popup" value="true" />
   </component>
   <component name="RunManager">
-    <configuration name="G04HW1" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="G04HW1" />
+    <configuration name="G04HW3" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="G04HW3" />
       <module name="HomeworkBigData.main" />
-      <option name="PROGRAM_PARAMETERS" value="4 input_10000.txt" />
+      <option name="PROGRAM_PARAMETERS" value="10 10 uber-small.csv" />
       <option name="VM_PARAMETERS" value="-Dspark.master=&quot;local[*]&quot;" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -48,7 +48,7 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.G04HW1" />
+        <item itemvalue="Application.G04HW3" />
       </list>
     </recent_temporary>
   </component>
@@ -70,30 +70,30 @@
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="233" y="2" key="#Notifications/0.0.1280.680@0.0.1280.680" timestamp="1585923931410" />
-    <state x="96" y="0" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1586623948048">
+    <state x="96" y="0" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1591955857472">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="96" y="0" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1280.680@0.0.1280.680" timestamp="1586623948048" />
+    <state x="96" y="0" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1280.680@0.0.1280.680" timestamp="1591955857472" />
     <state x="371" y="128" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1585930845940">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="371" y="128" key="#com.intellij.ide.util.TreeClassChooserDialog/0.0.1280.680@0.0.1280.680" timestamp="1585930845940" />
-    <state width="1237" height="107" key="GridCell.Tab.0.bottom" timestamp="1586623996448">
+    <state width="1237" height="107" key="GridCell.Tab.0.bottom" timestamp="1591956021900">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="107" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1586623996448" />
-    <state width="1237" height="107" key="GridCell.Tab.0.center" timestamp="1586623996447">
+    <state width="1237" height="107" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1591956021900" />
+    <state width="1237" height="107" key="GridCell.Tab.0.center" timestamp="1591956021899">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="107" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1586623996447" />
-    <state width="1237" height="107" key="GridCell.Tab.0.left" timestamp="1586623996447">
+    <state width="1237" height="107" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1591956021899" />
+    <state width="1237" height="107" key="GridCell.Tab.0.left" timestamp="1591956021899">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="107" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1586623996447" />
-    <state width="1237" height="107" key="GridCell.Tab.0.right" timestamp="1586623996447">
+    <state width="1237" height="107" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1591956021899" />
+    <state width="1237" height="107" key="GridCell.Tab.0.right" timestamp="1591956021899">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="107" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1586623996447" />
+    <state width="1237" height="107" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1591956021899" />
     <state x="121" y="0" key="SettingsEditor" timestamp="1585924534131">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
