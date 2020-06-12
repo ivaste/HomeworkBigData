@@ -26,9 +26,20 @@ where:
 UBER-SMALL
 spark-submit --num-executors 4  --class G04HW3 HomeworkBigData-all.jar 10 10 /data/BDC1920/uber-small.csv
 
-Glove2M300d.txt	100	16	16
+Glove2M300d.txt	100	16	16exec
 spark-submit --num-executors 16  --class G04HW3 HomeworkBigData-all.jar 100 16 /data/BDC1920/Glove2M300d.txt
 Init= 681 ms
 T1= 53149 ms
 T2 = 67574 ms
 Aver= 29.04073384782192
+
+
+Glove2M300d.txt	100	16	8exec
+spark-submit --num-executors 8  --class G04HW3 HomeworkBigData-all.jar 100 16 /data/BDC1920/Glove2M300d.txt
+Init = 542 ms
+T1 = 89186 ms
+T2 = 
+Aver = 
+
+
+spark-submit --num-executors 4  --class G04HW3 HomeworkBigData-all.jar 100 16 /data/BDC1920/Glove2M300d.txt
