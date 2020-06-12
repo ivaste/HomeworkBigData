@@ -40,7 +40,7 @@
     <configuration name="G04HW3" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="G04HW3" />
       <module name="HomeworkBigData.main" />
-      <option name="PROGRAM_PARAMETERS" value="10 10 uber-small.csv" />
+      <option name="PROGRAM_PARAMETERS" value="10 10 zalando.csv" />
       <option name="VM_PARAMETERS" value="-Dspark.master=&quot;local[*]&quot;" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -70,10 +70,10 @@
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="233" y="2" key="#Notifications/0.0.1280.680@0.0.1280.680" timestamp="1585923931410" />
-    <state x="96" y="0" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1591955857472">
+    <state x="96" y="0" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1591956412287">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="96" y="0" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1280.680@0.0.1280.680" timestamp="1591955857472" />
+    <state x="96" y="0" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1280.680@0.0.1280.680" timestamp="1591956412287" />
     <state x="371" y="128" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1585930845940">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
