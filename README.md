@@ -9,16 +9,20 @@ MSc Big Data Computing Homeworks at UniPD
 
  ## Homework 2 - Max pairwise distance problem
 **Link:** [G04HW2.java](https://github.com/ivaste/HomeworkBigData/blob/master/src/main/java/G04HW2.java)  
+
 **Contents:**
  - Exact solution
  - 2-approximation by taking k random points and returning the maximum distance between these points and all other points of S
  - Exact solution of a subset of C of S, where C are k centers retruned by Farthest-First Traversal
  
  ## Homework 3 - ???
-**Link:** [????](https://google.com)  
+**Link:**
+ - [G04HW3.java](https://github.com/ivaste/HomeworkBigData/blob/master/src/main/java/G04HW3.java)  
+ - [FormHW304.pdf](https://github.com/ivaste/HomeworkBigData/blob/master/FormHW304.pdf)  
+ 
 **Contents:**
- - ???
- - ???
+ - 2 Round Map Reduce for Diversity Maximization Problem
+ - Test the program on the cluster CloudVeneto
  
  # Team
  | <a href="https://stefanoivancich.com" target="_blank">**Stefano Ivancich**</a> | <a href="https://github.com/deno750" target="_blank">**Denis Deronjic**</a> | <a href="https://github.com/Lollyz" target="_blank">**Lorenzo Farinea**</a> |
