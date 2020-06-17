@@ -63,7 +63,7 @@ public class G04HW3 {
         //Round 2
         long round2Start = System.currentTimeMillis();
         ArrayList<Vector> coreset = new ArrayList<>(coresetRdd.collect());
-        ArrayList<Vector> solution = runRound2(coreset, K);
+        ArrayList<Vector> solution = runSequential(coreset, K);
         long round2Delta = System.currentTimeMillis() - round2Start;
         System.out.println("Runtime of Round 2 = " +round2Delta+ " ms");
 
@@ -87,11 +87,6 @@ public class G04HW3 {
                     return centers.iterator();
                 });
     }
-
-    public static ArrayList<Vector> runRound2(ArrayList<Vector> coreset, int K) {
-        return runSequential(coreset, K);
-    }
-
 
     public static ArrayList<Vector> runMapReduce(JavaRDD<Vector> points, int K, int L) { //Parameter L is used when repartition is called inside this function
         long round1Start = System.currentTimeMillis();
