@@ -51,21 +51,7 @@ public class G04HW3 {
         System.out.println("L = " +L);
         System.out.println("Initialization time = " +initTime+ " ms");
 
-        //Round 1
-        long round1Start = System.currentTimeMillis();
-        JavaRDD<Vector> coresetRdd = runRound1(rddPoints, K, L).cache();
-        coresetRdd.count();
-        long round1Delta = System.currentTimeMillis() - round1Start;
-        System.out.println("Runtime of Round 1 = " +round1Delta+ " ms");
-
-
-        //ArrayList<Vector> solution = runMapReduce(rddPoints, K, L);
-        //Round 2
-        long round2Start = System.currentTimeMillis();
-        ArrayList<Vector> coreset = new ArrayList<>(coresetRdd.collect());
-        ArrayList<Vector> solution = runSequential(coreset, K);
-        long round2Delta = System.currentTimeMillis() - round2Start;
-        System.out.println("Runtime of Round 2 = " +round2Delta+ " ms");
+        ArrayList<Vector> solution = runMapReduce(rddPoints, K, L);
 
         System.out.println("Average distance = " +measure(solution));
 
@@ -76,17 +62,6 @@ public class G04HW3 {
     // METHOD runMapReduce
     //
     // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-
-    public static JavaRDD<Vector> runRound1(JavaRDD<Vector> points, int K, int L) {
-        return points
-                //.repartition(L) //<-- Map Phase (R1)
-                .mapPartitions( (iterator) -> { //<-- Reduce phase (R1)
-                    ArrayList<Vector> vectors = new ArrayList<>();
-                    iterator.forEachRemaining(vectors::add);
-                    ArrayList<Vector> centers = kCenterMPD(vectors, K); //Farthest-First Traversal algorithm
-                    return centers.iterator();
-                });
-    }
 
     public static ArrayList<Vector> runMapReduce(JavaRDD<Vector> points, int K, int L) { //Parameter L is used when repartition is called inside this function
         long round1Start = System.currentTimeMillis();
@@ -100,7 +75,7 @@ public class G04HW3 {
                     return centers.iterator();
                 })
                 .cache();
-        coresetRRD.count(); //Used to avoid lazy evaluation and let system measure the spark's runtime
+        coresetRRD.count(); //Used to avoid lazy evaluation and let system measure spark's runtime
         long round1End = System.currentTimeMillis();
         long round1Time = round1End - round1Start;
         System.out.println("Runtime of Round 1 = " +round1Time+ " ms");
