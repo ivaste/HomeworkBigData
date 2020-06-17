@@ -40,7 +40,7 @@ public class G04HW3 {
         // Read input file and subdivide it into K random partitions
 
         long initStart = System.currentTimeMillis();
-        JavaRDD<Vector> rddPoints = sc.textFile(args[2]).map(G04HW3::strToVector).cache();
+        JavaRDD<Vector> rddPoints = sc.textFile(args[2]).map(G04HW3::strToVector);
         long numPoints=rddPoints.count();
         long initEnd = System.currentTimeMillis();
         long initTime = initEnd - initStart;
@@ -69,13 +69,11 @@ public class G04HW3 {
                 .repartition(L) //<-- Map Phase (R1)
                 .mapPartitions( (iterator) -> { //<-- Reduce phase (R1)
                     ArrayList<Vector> vectors = new ArrayList<>();
-                    iterator.forEachRemaining(vectors::add);    //?????????????
-                    /*while(iterator.hasNext()){
-                        vectors.add(iterator.next());
-                    }*/
+                    iterator.forEachRemaining(vectors::add);
                     ArrayList<Vector> centers = kCenterMPD(vectors, K); //Farthest-First Traversal algorithm
                     return centers.iterator();
-                });
+                })
+                .cache();
         coresetRRD.count(); //Used to avoid lazy evaluation and let system to measure the spark's runtime
         long round1End = System.currentTimeMillis();
         long round1Time = round1End - round1Start;
