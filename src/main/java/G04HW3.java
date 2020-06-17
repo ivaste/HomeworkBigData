@@ -14,18 +14,18 @@ public class G04HW3 {
 
         // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
         // CHECKING NUMBER OF CMD LINE PARAMETERS
-        // Parameters are: number_partitions, <path to file>
+        // Parameters are: diversity_maxim, number_partitions, <path to file>
         // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
-        if (args.length != 2) {
-            throw new IllegalArgumentException("USAGE: num_partitions file_path");
+        if (args.length != 3) {
+            throw new IllegalArgumentException("USAGE: diversity_maxim num_partitions file_path");
         }
 
         // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
         // SPARK SETUP
         // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
-        SparkConf conf = new SparkConf(true).setAppName("Homework1");
+        SparkConf conf = new SparkConf(true).setAppName("Homework3");
         JavaSparkContext sc = new JavaSparkContext(conf);
         sc.setLogLevel("WARN");
 
@@ -35,49 +35,83 @@ public class G04HW3 {
 
         // Read number of partitions
         int K = Integer.parseInt(args[0]);
-        int L = 5;
+        int L = Integer.parseInt(args[1]);;
 
-        // Read input file and subdivide it into K random partitions
+        // Read input file and subdivide it into L random partitions
 
         long initStart = System.currentTimeMillis();
-        JavaRDD<Vector> rddPoints = sc.textFile(args[1]).map(G04HW3::strToVector).cache();
+        JavaRDD<Vector> rddPoints = sc.textFile(args[2]).map(G04HW3::strToVector).repartition(L);
+        long numPoints=rddPoints.count();
         long initEnd = System.currentTimeMillis();
         long initTime = initEnd - initStart;
-        System.out.println("Number of points = " +rddPoints.count());
+
+
+        System.out.println("Number of points = " +numPoints);
         System.out.println("k = " +K);
         System.out.println("L = " +L);
         System.out.println("Initialization time = " +initTime+ " ms");
 
-        ArrayList<Vector> solution = runMapReduce(rddPoints, K, L);
+        //Round 1
+        long round1Start = System.currentTimeMillis();
+        JavaRDD<Vector> coresetRdd = runRound1(rddPoints, K, L).cache();
+        coresetRdd.count();
+        long round1Delta = System.currentTimeMillis() - round1Start;
+        System.out.println("Runtime of Round 1 = " +round1Delta+ " ms");
+
+
+        //ArrayList<Vector> solution = runMapReduce(rddPoints, K, L);
+        //Round 2
+        long round2Start = System.currentTimeMillis();
+        ArrayList<Vector> coreset = new ArrayList<>(coresetRdd.collect());
+        ArrayList<Vector> solution = runRound2(coreset, K);
+        long round2Delta = System.currentTimeMillis() - round2Start;
+        System.out.println("Runtime of Round 2 = " +round2Delta+ " ms");
 
         System.out.println("Average distance = " +measure(solution));
 
-        System.out.println("Solution: " +solution);
     }
+
 
     // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
     // METHOD runMapReduce
     //
     // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
-    public static ArrayList<Vector> runMapReduce(JavaRDD<Vector> points, int K, int L) {
-        long round1Start = System.currentTimeMillis();
-
-        JavaRDD<Vector> coresetRRD = points
-                .repartition(L) //<-- Map Phase (R1)
+    public static JavaRDD<Vector> runRound1(JavaRDD<Vector> points, int K, int L) {
+        return points
+                //.repartition(L) //<-- Map Phase (R1)
                 .mapPartitions( (iterator) -> { //<-- Reduce phase (R1)
                     ArrayList<Vector> vectors = new ArrayList<>();
                     iterator.forEachRemaining(vectors::add);
-                    ArrayList<Vector> centers = kCenterMPD(vectors, K);
+                    ArrayList<Vector> centers = kCenterMPD(vectors, K); //Farthest-First Traversal algorithm
                     return centers.iterator();
-                 });
-        coresetRRD.count(); //Used to avoid lazy evaluation and let system to measure the spark's runtime
+                });
+    }
+
+    public static ArrayList<Vector> runRound2(ArrayList<Vector> coreset, int K) {
+        return runSequential(coreset, K);
+    }
+
+
+    public static ArrayList<Vector> runMapReduce(JavaRDD<Vector> points, int K, int L) { //Parameter L is used when repartition is called inside this function
+        long round1Start = System.currentTimeMillis();
+
+        JavaRDD<Vector> coresetRRD = points
+                //.repartition(L) //<-- Map Phase (R1)
+                .mapPartitions( (iterator) -> { //<-- Reduce phase (R1)
+                    ArrayList<Vector> vectors = new ArrayList<>();
+                    iterator.forEachRemaining(vectors::add);
+                    ArrayList<Vector> centers = kCenterMPD(vectors, K); //Farthest-First Traversal algorithm
+                    return centers.iterator();
+                })
+                .cache();
+        coresetRRD.count(); //Used to avoid lazy evaluation and let system measure the spark's runtime
         long round1End = System.currentTimeMillis();
         long round1Time = round1End - round1Start;
         System.out.println("Runtime of Round 1 = " +round1Time+ " ms");
 
+        //Reduce Phase (R2)
         long round2Start = System.currentTimeMillis();
-        //Reduce pahse (R2)
         ArrayList<Vector> coreset = new ArrayList<>(coresetRRD.collect());
         ArrayList<Vector> solution = runSequential(coreset, K);
 
@@ -87,6 +121,8 @@ public class G04HW3 {
 
         return solution;
     }
+
+
 
     // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
     // METHOD runSequential
@@ -146,66 +182,38 @@ public class G04HW3 {
 
     } // END runSequential
 
+
     // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
     // METHOD kCenterMPD
     // Sequential farthest first traversal algorighm
     // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-    public static ArrayList<org.apache.spark.mllib.linalg.Vector> kCenterMPD(ArrayList<org.apache.spark.mllib.linalg.Vector> inputPoints, int K) {
-        if (K < 0 || K >= inputPoints.size()) {
-            throw new IllegalArgumentException("K should be > 0 and < inputPoints.size()");
+    private static ArrayList<Vector> kCenterMPD(ArrayList<Vector> P, int k) {
+        ArrayList<Vector> C = new ArrayList<>();
+        ArrayList<Double> dist = new ArrayList<>();             // arraylist of the distances. Simmetrical to P
+        for (int i = 0; i < P.size(); i++) {
+            dist.add(Double.POSITIVE_INFINITY);                 // initialize all the distances to infinity
         }
 
-        long SEED = 1231829; //Here you can change the seed
+        C.add(P.get(0));                                        // choose the first center as a random point of P
 
-        ArrayList<org.apache.spark.mllib.linalg.Vector> centers = new ArrayList<>(); //Our set S
-        Map<org.apache.spark.mllib.linalg.Vector, Tuple2<org.apache.spark.mllib.linalg.Vector, Double>> mappedPoints = new HashMap<>(); //Stores the point as a key and a tuple as a value which stores the point's center and its distance from the center
-        //First random point ck
-        Random random = new Random(SEED);
-        int index = random.nextInt(inputPoints.size());
-        centers.add(inputPoints.get(index));
-
-        inputPoints.remove(index); //P - S
-        for (org.apache.spark.mllib.linalg.Vector p : inputPoints) {//O(N)
-            double dist = org.apache.spark.mllib.linalg.Vectors.sqdist(p, centers.get(0));
-            mappedPoints.put(p, new Tuple2<>(centers.get(0), dist));
+        for (int i = 0; i < dist.size(); i++) {
+            dist.set(i, Math.sqrt(Vectors.sqdist(C.get(0), P.get(i))));     // Update the distances from the first selected point
         }
 
-        //The cycle should run in O(K*(N+N)) = O(K*N) where N = inputPoints.size()
-        for (int i = 0; i < K - 1; ++i) { //K-1 since the first element is already added. O(K)
-            org.apache.spark.mllib.linalg.Vector newCenter = null;
-            double distance = 0;
-            int indexOfNewCenter = -1; //Stores the index od the new center in order to remove it in O(1) from inputPoints
+        for (int l = 1; l < k; l++) {   //since we select all the k center do:
+            int max_index = dist.indexOf(Collections.max(dist)); //choose the point at max distance from the center set
+            C.add(P.get(max_index));                             //add to the center set
 
-            for (int j = 0; j < inputPoints.size(); ++j) {  //O(N)
-                org.apache.spark.mllib.linalg.Vector p = inputPoints.get(j); //O(1)
-                Tuple2<org.apache.spark.mllib.linalg.Vector, Double> tuple = mappedPoints.get(p); //O(1) hashmap!
-                //Checks which point is the farthest from its center
-                if (tuple._2 > distance) { //O(1)
-                    distance = tuple._2;
-                    newCenter = p;
-                    indexOfNewCenter = j;
-                }
+            //update the disctances in the following way: For each remaining not-yet-selected point q,
+            // replace the distance stored for q by the minimum of its old value and the distance from p to q.
+            for (int i = 0; i < P.size(); i++) {
+                double d1 = dist.get(i);
+                double d2 = Math.sqrt(Vectors.sqdist(C.get(l), P.get(i)));
+                dist.set(i, Math.min(d1, d2));
             }
 
-            if (newCenter != null) {
-                centers.add(newCenter); //O(1)
-                inputPoints.remove(indexOfNewCenter); //P - S O(1)
-
-                //Updates the center of the points where the distance of the new added center is less equal than the older center
-                for (org.apache.spark.mllib.linalg.Vector p : inputPoints) { //O(N)
-                    Tuple2<org.apache.spark.mllib.linalg.Vector, Double> tuple = mappedPoints.get(p); //O(1) hashmap!
-                    double dist = org.apache.spark.mllib.linalg.Vectors.sqdist(p, newCenter); //O(1)
-                    dist = Math.sqrt(dist);
-                    if (dist < tuple._2) { //O(1)
-                        mappedPoints.remove(p);
-                        mappedPoints.put(p, new Tuple2<>(newCenter, dist)); //O(1) hashmap!
-                    }
-                }
-            }
         }
-        assert centers.size() == K; //Makes sure that there are K points
-
-        return centers;
+        return C;
     }
 
     public static Vector strToVector(String str) {
@@ -217,8 +225,11 @@ public class G04HW3 {
         return Vectors.dense(data);
     }
 
-    static double measure(ArrayList<Vector> pointSet) { //Completely wrong. Do it again from scratch
+
+    static double measure(ArrayList<Vector> pointSet) {
+
         double sum = 0;
+        double den=0;
         for (int i = 0; i < pointSet.size(); ++i) {
             Vector p1 = pointSet.get(i);
             double pointDist = 0;
@@ -227,11 +238,12 @@ public class G04HW3 {
                 if (p1 == p2) continue;
                 double dist = Vectors.sqdist(p1, p2);
                 dist = Math.sqrt(dist);
-                pointDist += dist;
+                sum+=dist;
+                den++;
             }
-            pointDist /= pointSet.size() - 1;
-            sum += pointDist;
         }
-        return sum / pointSet.size();
+
+        return sum/den;
     }
+
 }
