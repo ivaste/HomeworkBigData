@@ -40,7 +40,7 @@ public class G04HW3 {
         // Read input file and subdivide it into K random partitions
 
         long initStart = System.currentTimeMillis();
-        JavaRDD<Vector> rddPoints = sc.textFile(args[2]).map(G04HW3::strToVector);
+        JavaRDD<Vector> rddPoints = sc.textFile(args[2]).map(G04HW3::strToVector).repartition(L);
         long numPoints=rddPoints.count();
         long initEnd = System.currentTimeMillis();
         long initTime = initEnd - initStart;
@@ -53,7 +53,6 @@ public class G04HW3 {
 
         System.out.println("Average distance = " +measure(solution));
 
-        //System.out.println("Solution: " +solution);
     }
 
 
@@ -66,7 +65,7 @@ public class G04HW3 {
         long round1Start = System.currentTimeMillis();
 
         JavaRDD<Vector> coresetRRD = points
-                .repartition(L) //<-- Map Phase (R1)
+                //.repartition(L) //<-- Map Phase (R1)
                 .mapPartitions( (iterator) -> { //<-- Reduce phase (R1)
                     ArrayList<Vector> vectors = new ArrayList<>();
                     iterator.forEachRemaining(vectors::add);
