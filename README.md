@@ -15,7 +15,7 @@ MSc Big Data Computing Homeworks at UniPD
  - 2-approximation by taking k random points and returning the maximum distance between these points and all other points of S
  - Exact solution of a subset of C of S, where C are k centers retruned by Farthest-First Traversal
  
- ## Homework 3 - ???
+ ## Homework 3 - Diversity Maximization Problem
 **Link:**
  - [G04HW3.java](https://github.com/ivaste/HomeworkBigData/blob/master/src/main/java/G04HW3.java)  
  - [FormHW304.pdf](https://github.com/ivaste/HomeworkBigData/blob/master/FormHW304.pdf)  
